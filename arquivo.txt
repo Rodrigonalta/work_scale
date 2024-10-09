@@ -1,0 +1,78 @@
+import pandas as pd
+import system
+from datetime import datetime, timedelta
+
+# Função para cadastrar colaboradores
+def cadastrar_colaborador(colaboradores):
+    colaborador = {}
+    colaborador['nome'] = input("Digite o nome do colaborador: ")
+    colaborador['horario'] = input("Digite o horário de trabalho (ex: 08:00-17:00): ")
+    colaborador['escala'] = input("Digite a escala (6x1 ou 5x2): ")
+    
+    colaboradores.append(colaborador)
+    print(f"Colaborador {colaborador['nome']} cadastrado com sucesso!\n")
+
+# Função para exibir a tabela de colaboradores
+def exibir_colaboradores(colaboradores):
+    if colaboradores:
+        df = pd.DataFrame(colaboradores)
+********df.to_excel('meu_dataframe.xlsx', sheet_name = 'Colaboradores',index=False)
+        print("\nTabela de Colaboradores:")
+        print(df)
+    else:
+        print("Nenhum colaborador cadastrado.\n")
+
+# Função para gerar a escala com base na data atual
+def gerar_escala(colaboradores):
+    if not colaboradores:
+        print("Nenhum colaborador cadastrado para gerar a escala.\n")
+        return
+
+    dias = 30  # Número de dias para exibir a escala
+    data_atual = datetime.now()
+
+    for i in range(dias):
+        dia = data_atual + timedelta(days=i)
+        print(f"\nData: {dia.strftime('%Y-%m-%d')}")
+
+        for colaborador in colaboradores:
+            if colaborador['escala'] == "6x1":
+                escalas = ["Trabalho", "Trabalho", "Trabalho", "Trabalho", "Trabalho", "Trabalho", "Descanso"]
+            elif colaborador['escala'] == "5x2":
+                escalas = ["Trabalho", "Trabalho", "Trabalho", "Trabalho", "Trabalho", "Descanso", "Descanso"]
+            else:
+                escalas = ["Escala inválida"]
+
+            # Exibe a ocupação do colaborador baseado na escala
+            ocupacao = escalas[dia.weekday() % len(escalas)]
+            print(f"{colaborador['nome']} ({colaborador['horario']}): {ocupacao}")
+
+
+# Programa principal
+def main():
+    colaboradores = []
+
+    while True:
+        print("Menu:")
+        print("1 - Cadastrar Colaborador")
+        print("2 - Exibir Colaboradores")
+        print("3 - Gerar Escala")
+        print("4 - Sair")
+        
+        opcao = input("Escolha uma opção: ")
+
+        if opcao == "1":
+            cadastrar_colaborador(colaboradores)
+        elif opcao == "2":
+            system.os('cls')
+            exibir_colaboradores(colaboradores)
+        elif opcao == "3":
+            gerar_escala(colaboradores)
+        elif opcao == "4":
+            print("Saindo do programa...")
+            break
+        else:
+            print("Opção inválida, tente novamente.")
+
+if _name_ == "_main_":
+    main()
